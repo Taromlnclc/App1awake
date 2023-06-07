@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Awake</string>
+    <string name="miTitulo">Formulario de registro.</string>
+    <string name="miNombre">Nombre:</string>
+    <string name="miApellido">Apellido:</string>
+    <string name="miMail">Mail:</string>
+    <string name="miEnvio">Enviar</string>
+    <string name="miDesc">Boton para enviar datos del formulario.</string>
+    <string name="miTitulo2">Usuario Registrado</string>
+    <string name="uName">Tu nombre.</string>
+    <string name="uSur">Tu apellido.</string>
+    <string name="uMai">tu@correo.com</string>
+</resources>
