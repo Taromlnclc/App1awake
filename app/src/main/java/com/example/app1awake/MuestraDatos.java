@@ -22,7 +22,8 @@ public class MuestraDatos extends AppCompatActivity {
             String email = extras.getString("email");
             // y se muestran
             TextView myData = findViewById(R.id.muestraDato);
-            myData.setText(nombre + " " +  apellido + "                                   " + email);
+            String dataX = nombre + " " +  apellido + "                                   " + email;
+            myData.setText(dataX);
 
         }
     }

@@ -37,6 +37,7 @@
             android:layout_width="373dp"
             android:layout_height="290dp"
             android:layout_marginTop="100sp"
+            android:contentDescription="@string/userRes"
             android:src="@drawable/registered"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

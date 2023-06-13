@@ -35,12 +35,7 @@ public class MainActivity extends AppCompatActivity {
         mySend.setText(R.string.miEnvio);
 
     }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.d(TAG,"On Start!");
-    }
+    //boton de ingreso datos
     public void botonClick(View view) {
         Button mySend = findViewById(R.id.miEnvio);
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.boton_resize);
@@ -53,6 +48,12 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("apellido", apeText.getText().toString());
         intent.putExtra("email", maiText.getText().toString());
         startActivity(intent);
+    }
+//LOGCAT
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG,"On Start!");
     }
     @Override
     protected void onResume() {
