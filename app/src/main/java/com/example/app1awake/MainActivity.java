@@ -1,12 +1,16 @@
 package com.example.app1awake;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -40,16 +44,73 @@ public class MainActivity extends AppCompatActivity {
         Button mySend = findViewById(R.id.miEnvio);
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.boton_resize);
         mySend.startAnimation(animation);
-        Intent intent = new Intent(this, MuestraDatos.class);
+
         EditText nomText = findViewById(R.id.editNombre);
         EditText apeText = findViewById(R.id.editApellido);
         EditText maiText = findViewById(R.id.editEmail);
-        intent.putExtra("nombre", nomText.getText().toString());
-        intent.putExtra("apellido", apeText.getText().toString());
-        intent.putExtra("email", maiText.getText().toString());
-        startActivity(intent);
+
+        String nombre = nomText.getText().toString();
+        String apellido = apeText.getText().toString();
+        String correo = maiText.getText().toString();
+
+        if (!validarCampos(nombre,apellido,correo,nomText,apeText,maiText)) {
+            // Si esta bien avanza
+            Intent intent = new Intent(this, MuestraDatos.class);
+            intent.putExtra("nombre", nombre);
+            intent.putExtra("apellido", apellido);
+            intent.putExtra("email", correo);
+            startActivity(intent);
+        }
+
     }
-//LOGCAT
+
+    // Validación de los campos nombre, apellido y correo electrónico
+    public boolean validarCampos(String nombre, String apellido, String correo, EditText nom, EditText ape,EditText eme ) {
+        if (nombre.isEmpty()) {
+            // Mostrar mensaje y foco para el campo nombre
+            nom.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(nom, InputMethodManager.SHOW_IMPLICIT);
+            mostrarAlerta(" nombre no ingresado");
+            return true;
+        }
+        if (apellido.isEmpty()) {
+            // Mostrar mensaje y foco para el campo apellido
+            ape.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(ape, InputMethodManager.SHOW_IMPLICIT);
+            mostrarAlerta(" apellido no ingresado");
+            return true;
+        }
+        if (correo.isEmpty()) {
+            // Mostrar mensaje y fodo para el campo correo electrónico
+            eme.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(eme, InputMethodManager.SHOW_IMPLICIT);
+            mostrarAlerta(" correo no ingresado");
+            return true;
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(correo).matches()) {
+            // Mostrar mensaje y foco, formato de correo electrónico inválido
+            eme.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(eme, InputMethodManager.SHOW_IMPLICIT);
+            mostrarAlerta(" revisar formato de correo");
+            return true;
+        }
+        return false;
+    }
+
+    // Mensajes de alerta
+    private void mostrarAlerta(String atributo) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Falta " + atributo + ".")
+                .setMessage("Revisar informacion, " + atributo + ".")
+                .setPositiveButton("Aceptar", (dialog, which) -> dialog.dismiss());
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    //LOGCAT
     @Override
     protected void onStart() {
         super.onStart();
