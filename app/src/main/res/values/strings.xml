@@ -11,4 +11,5 @@
     <string name="uSur">Tu apellido.</string>
     <string name="uMai">tu@correo.com</string>
     <string name="userRes">Imagenes de usuarios.</string>
+    <string name="userTema">Boton para cambio de tema.</string>
 </resources>
