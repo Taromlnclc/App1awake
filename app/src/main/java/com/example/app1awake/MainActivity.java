@@ -3,6 +3,7 @@ package com.example.app1awake;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,15 +14,36 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
 
+public class MainActivity extends AppCompatActivity {
+    private boolean temaOscuro = false;
     private final String TAG = MainActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        /* Cambia tema al evento oncreate perdia datos como el booleano de temaOscuro
+         Solucion simple usar SharedPreferences  usar la variable global de esta forma logre guardar el
+         boolean para luego al recreate() volver a recuperarlo por perdida en el activity. */
+        temaOscuro = restauraTema();
+        if (!temaOscuro) {
+            setTheme(R.style.Theme_temaAwakedia);
+        }else {
+            setTheme(R.style.Theme_temaAwakenoche);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //icono del boton del tema
+        ImageView tema = findViewById(R.id.botonTema);
+        if (!temaOscuro) {
+            tema.setImageResource(R.drawable.luna);
+        }else {
+            tema.setImageResource(R.drawable.sol);
+        }
 
         TextView myTitle = findViewById(R.id.miTitulo);
         myTitle.setText(R.string.miTitulo);
@@ -38,7 +60,29 @@ public class MainActivity extends AppCompatActivity {
         Button mySend = findViewById(R.id.miEnvio);
         mySend.setText(R.string.miEnvio);
 
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.boton_resize);
+        tema.startAnimation(animation);
     }
+    /* Boton de cambio tema, guardaTema */
+    public void cambioTema(View view) {
+        temaOscuro = !temaOscuro;
+        guardaTema();
+        recreate();
+    }
+    private void guardaTema() {
+        // Guarda el boolean del tema en SharedPreferences y una variable global
+        SharedPreferences preferences = getSharedPreferences("MisDatos", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("tema", temaOscuro);
+        editor.apply();
+    }
+    private boolean  restauraTema() {
+        // Restaura el boolean del tema desde SharedPreferences y asigna a su variable global
+        SharedPreferences preferences = getSharedPreferences("MisDatos", MODE_PRIVATE);
+        temaOscuro = preferences.getBoolean("tema", temaOscuro);
+        return temaOscuro;
+    }
+
     //boton de ingreso datos
     public void botonClick(View view) {
         Button mySend = findViewById(R.id.miEnvio);
@@ -56,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
         if (!validarCampos(nombre,apellido,correo,nomText,apeText,maiText)) {
             // Si esta bien avanza
             Intent intent = new Intent(this, MuestraDatos.class);
+            intent.putExtra("tema", temaOscuro);
             intent.putExtra("nombre", nombre);
             intent.putExtra("apellido", apellido);
             intent.putExtra("email", correo);
@@ -65,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Validación de los campos nombre, apellido y correo electrónico
-    public boolean validarCampos(String nombre, String apellido, String correo, EditText nom, EditText ape,EditText eme ) {
+    private boolean validarCampos(String nombre, String apellido, String correo, EditText nom, EditText ape,EditText eme ) {
         if (nombre.isEmpty()) {
             // Mostrar mensaje y foco para el campo nombre
             nom.requestFocus();
